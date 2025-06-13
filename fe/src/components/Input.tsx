@@ -1,19 +1,37 @@
-import { useRef, useState, type FC } from "react";
+import { useEffect, useRef, useState, type FC } from "react";
+import type Message from "./Message";
+
+type MessageProp = React.ComponentProps<typeof Message>;
 
 interface Props {
-    onSend: (message: string) => void;
+    onSend: (message: MessageProp) => void;
 }
 
 const Input: FC<Props> = ({ onSend }) => {
     const [text, setText] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
+    useEffect(() => {
+        const handleKeydown = (event: KeyboardEvent) => {
+            if (event.code === "Enter") {
+                handleClick();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeydown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeydown);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [text]);
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setText(event.target.value);
     };
 
     const handleClick = () => {
-        onSend(text);
+        onSend({ message: text, time: new Date() });
         setText("");
         if (inputRef.current) {
             inputRef.current.focus();
