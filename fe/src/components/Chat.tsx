@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Input from "./Input";
 import Message from "./Message";
 import { SocketContext } from "@/contexts/SocketContext";
+import type { ResponseMessage } from "@/types/common";
 
 type MessageProp = React.ComponentProps<typeof Message>;
 
@@ -21,10 +22,16 @@ const Chat = () => {
             console.log(`You are connected with id: ${socket.id}`);
         };
 
-        const handleReceive = (response: { message: string; time: string }) => {
+        const handleReceive = ({
+            socketId,
+            message,
+        }: {
+            socketId: string;
+            message: ResponseMessage;
+        }) => {
             setMessages((prevMessages) => [
                 ...prevMessages,
-                { message: response.message, time: new Date(response.time) },
+                { socketId, message },
             ]);
         };
 
@@ -38,7 +45,7 @@ const Chat = () => {
     }, [socket]);
 
     const handleSend = (newMessage: MessageProp) => {
-        socket.emit("send", newMessage);
+        socket.emit("send", { socketId: socket.id, message: newMessage });
     };
 
     return (

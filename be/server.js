@@ -7,7 +7,7 @@ const io = new Server(3000, {
 });
 
 io.on("connection", (socket) => {
-    socket.on("send", (message) => {
-        io.emit("receive", message);
+    socket.on("send", ({ socketId, message }) => {
+        io.emit("receive", { socketId, message });
     });
 });

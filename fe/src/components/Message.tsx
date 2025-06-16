@@ -1,22 +1,37 @@
-import type { FC } from "react";
+import { SocketContext } from "@/contexts/SocketContext";
+import type { ResponseMessage } from "@/types/common";
+import { memo, useContext, type FC } from "react";
 
 interface Props {
-    message: string;
-    time: Date;
+    socketId: string;
+    message: ResponseMessage;
 }
 
-const Message: FC<Props> = ({ message, time }) => {
-    const extractTime = (date: Date): string => {
-        return date.toISOString().split("T")[1].split(".")[0];
+const Message: FC<Props> = memo(({ socketId, message }) => {
+    const { socket } = useContext(SocketContext);
+
+    const extractTime = (time: string): string => {
+        return new Date(time).toISOString().split("T")[1].split(".")[0];
     };
 
+    const isMyMessage: boolean = socketId === socket.id;
+
     return (
-        <div className="bg-[#222] flex flex-col px-8 py-2 rounded-full w-fit">
-            <h1 className="font-semibold">You: </h1>
-            <h2 className="flex">{message}</h2>
-            <h3 className="text-[#ffffff62] text-sm">at {extractTime(time)}</h3>
-        </div>
+        <section
+            className="flex w-full"
+            style={{
+                justifyContent: isMyMessage ? "flex-end" : "flex-start",
+            }}
+        >
+            <div className="bg-[#222] px-8 py-2 rounded-full w-fit">
+                <h1 className="font-semibold">{socketId}:</h1>
+                <h2 className="flex">{message.message}</h2>
+                <h3 className="text-[#ffffff62] text-sm">
+                    at {extractTime(message.time)}
+                </h3>
+            </div>
+        </section>
     );
-};
+});
 
 export default Message;
