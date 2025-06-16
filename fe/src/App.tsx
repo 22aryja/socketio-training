@@ -1,10 +1,13 @@
 import Chat from "./components/Chat";
+import { SocketProvider } from "./providers/SocketProvider";
 
 const App = () => {
     return (
-        <main className="w-screen h-screen flex justify-center items-center">
-            <Chat />
-        </main>
+        <SocketProvider>
+            <main className="w-screen h-screen flex justify-center items-center">
+                <Chat />
+            </main>
+        </SocketProvider>
     );
 };
 

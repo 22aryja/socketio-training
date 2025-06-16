@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Input from "./Input";
 import Message from "./Message";
+import { SocketContext } from "@/contexts/SocketContext";
 
 type MessageProp = React.ComponentProps<typeof Message>;
 
 const Chat = () => {
     const [messages, setMessages] = useState<MessageProp[]>([]);
     const anchor = useRef<HTMLDivElement | null>(null);
+    const { socket } = useContext(SocketContext);
 
     useEffect(() => {
         if (anchor.current) {
@@ -14,8 +16,29 @@ const Chat = () => {
         }
     }, [messages]);
 
+    useEffect(() => {
+        const handleConnect = () => {
+            console.log(`You are connected with id: ${socket.id}`);
+        };
+
+        const handleReceive = (response: { message: string; time: string }) => {
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { message: response.message, time: new Date(response.time) },
+            ]);
+        };
+
+        socket.on("connect", handleConnect);
+        socket.on("receive", handleReceive);
+
+        return () => {
+            socket.off("connect", handleConnect);
+            socket.off("receive", handleReceive);
+        };
+    }, [socket]);
+
     const handleSend = (newMessage: MessageProp) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        socket.emit("send", newMessage);
     };
 
     return (
