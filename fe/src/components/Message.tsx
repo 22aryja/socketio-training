@@ -11,7 +11,10 @@ const Message: FC<Props> = memo(({ socketId, message }) => {
     const { socket } = useContext(SocketContext);
 
     const extractTime = (time: string): string => {
-        return new Date(time).toISOString().split("T")[1].split(".")[0];
+        return new Date(time).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
     };
 
     const isMyMessage: boolean = socketId === socket.id;
@@ -25,7 +28,7 @@ const Message: FC<Props> = memo(({ socketId, message }) => {
         >
             <div className="bg-[#222] px-8 py-2 rounded-full w-fit">
                 <h1 className="font-semibold">{socketId}:</h1>
-                <h2 className="flex">{message.message}</h2>
+                <h2 className="flex">{message.content}</h2>
                 <h3 className="text-[#ffffff62] text-sm">
                     at {extractTime(message.time)}
                 </h3>

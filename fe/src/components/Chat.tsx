@@ -45,7 +45,7 @@ const Chat = () => {
     }, [socket]);
 
     const handleSend = (newMessage: MessageProp) => {
-        socket.emit("send", { socketId: socket.id, message: newMessage });
+        socket.emit("send", newMessage);
     };
 
     return (

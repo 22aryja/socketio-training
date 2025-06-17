@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type FC } from "react";
+import { useContext, useEffect, useRef, useState, type FC } from "react";
 import type Message from "./Message";
+import { SocketContext } from "@/contexts/SocketContext";
 
 type MessageProp = React.ComponentProps<typeof Message>;
 
@@ -10,6 +11,7 @@ interface Props {
 const Input: FC<Props> = ({ onSend }) => {
     const [text, setText] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const { socket } = useContext(SocketContext);
 
     useEffect(() => {
         const handleKeydown = (event: KeyboardEvent) => {
@@ -31,7 +33,11 @@ const Input: FC<Props> = ({ onSend }) => {
     };
 
     const handleClick = () => {
-        onSend({ message: text, time: new Date() });
+        if (!text) return;
+        onSend({
+            socketId: socket.id!,
+            message: { content: text, time: new Date().toISOString() },
+        });
         setText("");
         if (inputRef.current) {
             inputRef.current.focus();
