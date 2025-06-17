@@ -11,7 +11,7 @@ interface Props {
 const Input: FC<Props> = ({ onSend }) => {
     const [text, setText] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const { socket } = useContext(SocketContext);
+    const { socket, username } = useContext(SocketContext);
 
     useEffect(() => {
         const handleKeydown = (event: KeyboardEvent) => {
@@ -36,6 +36,7 @@ const Input: FC<Props> = ({ onSend }) => {
         if (!text) return;
         onSend({
             socketId: socket.id!,
+            username,
             message: { content: text, time: new Date().toISOString() },
         });
         setText("");

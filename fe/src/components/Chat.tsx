@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Input from "./Input";
 import Message from "./Message";
 import { SocketContext } from "@/contexts/SocketContext";
-import type { ResponseMessage } from "@/types/common";
 
 type MessageProp = React.ComponentProps<typeof Message>;
 
@@ -24,14 +23,12 @@ const Chat = () => {
 
         const handleReceive = ({
             socketId,
+            username,
             message,
-        }: {
-            socketId: string;
-            message: ResponseMessage;
-        }) => {
+        }: MessageProp) => {
             setMessages((prevMessages) => [
                 ...prevMessages,
-                { socketId, message },
+                { socketId, username, message },
             ]);
         };
 
