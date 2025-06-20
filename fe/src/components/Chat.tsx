@@ -8,7 +8,7 @@ type MessageProp = React.ComponentProps<typeof Message>;
 const Chat = () => {
     const [messages, setMessages] = useState<MessageProp[]>([]);
     const anchor = useRef<HTMLDivElement | null>(null);
-    const { socket } = useContext(SocketContext);
+    const { socket, username } = useContext(SocketContext);
 
     useEffect(() => {
         if (anchor.current) {
@@ -18,7 +18,7 @@ const Chat = () => {
 
     useEffect(() => {
         const handleConnect = () => {
-            console.log(`You are connected with id: ${socket.id}`);
+            socket?.emit("join", username);
         };
 
         const handleReceive = ({
@@ -32,17 +32,16 @@ const Chat = () => {
             ]);
         };
 
-        socket.on("connect", handleConnect);
-        socket.on("receive", handleReceive);
+        socket?.once("connect", handleConnect);
+        socket?.on("receive", handleReceive);
 
         return () => {
-            socket.off("connect", handleConnect);
-            socket.off("receive", handleReceive);
+            socket?.off("receive", handleReceive);
         };
     }, [socket]);
 
     const handleSend = (newMessage: MessageProp) => {
-        socket.emit("send", newMessage);
+        socket?.emit("send", newMessage);
     };
 
     return (

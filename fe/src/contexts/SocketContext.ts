@@ -1,17 +1,16 @@
 import { createContext } from "react";
 import type { Socket } from "socket.io-client";
-import { io } from "socket.io-client";
 
 type SocketContextType = {
-    socket: Socket;
+    socket: Socket | null;
+    setSocket: (socket: Socket) => void;
     username: string;
     setUsername: (username: string) => void;
 };
 
-const socket = io("http://localhost:3000");
-
 export const socketContextValues: SocketContextType = {
-    socket,
+    socket: null,
+    setSocket: () => {},
     username: "",
     setUsername: () => {},
 };

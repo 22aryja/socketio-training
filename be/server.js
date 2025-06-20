@@ -10,4 +10,15 @@ io.on("connection", (socket) => {
     socket.on("send", ({ socketId, username, message }) => {
         io.emit("receive", { socketId, username, message });
     });
+
+    socket.on("join", (username) => {
+        socket.broadcast.emit("receive", {
+            socketId: "system",
+            username,
+            message: {
+                content: `${username} has joined the chat.`,
+                time: new Date().toISOString(),
+            },
+        });
+    });
 });

@@ -1,6 +1,7 @@
 import { SocketContext } from "@/contexts/SocketContext";
 import { Modal } from "@/ui/Modal";
 import { useContext, useId, useState, type FC } from "react";
+import { io } from "socket.io-client";
 
 interface Props {
     onClick: () => void;
@@ -9,7 +10,7 @@ interface Props {
 export const GreetingModal: FC<Props> = ({ onClick }) => {
     const id: string = useId();
     const [name, setName] = useState<string>("");
-    const { setUsername } = useContext(SocketContext);
+    const { setUsername, setSocket } = useContext(SocketContext);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
@@ -18,6 +19,8 @@ export const GreetingModal: FC<Props> = ({ onClick }) => {
     const handleClick = () => {
         onClick();
         setUsername(name);
+        const socket = io("http://localhost:3000");
+        setSocket(socket);
     };
 
     return (
