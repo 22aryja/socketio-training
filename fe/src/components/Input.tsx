@@ -1,11 +1,9 @@
-import { useContext, useEffect, useRef, useState, type FC } from "react";
-import type Message from "./Message";
 import { SocketContext } from "@/contexts/SocketContext";
-
-type MessageProp = React.ComponentProps<typeof Message>;
+import type { NewMassage } from "@/types/common";
+import { useContext, useEffect, useRef, useState, type FC } from "react";
 
 interface Props {
-    onSend: (message: MessageProp) => void;
+    onSend: (message: NewMassage) => void;
 }
 
 const Input: FC<Props> = ({ onSend }) => {
@@ -35,9 +33,9 @@ const Input: FC<Props> = ({ onSend }) => {
     const handleClick = () => {
         if (!text) return;
         onSend({
-            socketId: socket.id!,
+            socketId: socket?.id || "",
             username,
-            message: { content: text, time: new Date().toISOString() },
+            message: text,
         });
         setText("");
         if (inputRef.current) {

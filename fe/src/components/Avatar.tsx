@@ -1,5 +1,5 @@
 import { useAvatar } from "@/hooks/useAvatar";
-import { memo, type FC } from "react";
+import { type FC } from "react";
 
 interface Props {
     socketId: string;

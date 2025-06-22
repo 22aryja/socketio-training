@@ -1,12 +1,11 @@
 import { SocketContext } from "@/contexts/SocketContext";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import type { NewMassage, ReceivedMessage } from "@/types/common";
+import { useContext, useEffect, useRef, useState } from "react";
 import Input from "./Input";
 import Message from "./Message";
 
-type MessageProp = React.ComponentProps<typeof Message>;
-
 const Chat = () => {
-    const [messages, setMessages] = useState<MessageProp[]>([]);
+    const [messages, setMessages] = useState<ReceivedMessage[]>([]);
     const anchor = useRef<HTMLDivElement | null>(null);
     const { socket, username } = useContext(SocketContext);
 
@@ -25,10 +24,11 @@ const Chat = () => {
             socketId,
             username,
             message,
-        }: MessageProp) => {
+            time,
+        }: ReceivedMessage) => {
             setMessages((prevMessages) => [
                 ...prevMessages,
-                { socketId, username, message },
+                { socketId, username, message, time },
             ]);
         };
 
@@ -41,7 +41,7 @@ const Chat = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
 
-    const handleSend = (newMessage: MessageProp) => {
+    const handleSend = (newMessage: NewMassage) => {
         socket?.emit("send", newMessage);
     };
 
@@ -49,7 +49,7 @@ const Chat = () => {
         <section className="border border-solid border-gray-200 w-3/4 h-3/4 rounded-md bg-[#22222279]">
             <div className="w-full h-full flex flex-col justify-between">
                 <div className="overflow-auto h-full w-full p-4 flex flex-col gap-4">
-                    {messages.map((props: MessageProp, index: number) => (
+                    {messages.map((props: ReceivedMessage, index: number) => (
                         <Message key={index} {...props} />
                     ))}
                     <div ref={anchor} />

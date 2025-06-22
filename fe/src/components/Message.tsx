@@ -1,15 +1,9 @@
 import { SocketContext } from "@/contexts/SocketContext";
-import type { ResponseMessage } from "@/types/common";
 import { memo, useContext, type FC } from "react";
 import Avatar from "./Avatar";
+import type { ReceivedMessage } from "@/types/common";
 
-interface Props {
-    socketId: string;
-    username: string;
-    message: ResponseMessage;
-}
-
-const Message: FC<Props> = memo(({ socketId, username, message }) => {
+const Message: FC<ReceivedMessage> = memo(({ socketId, username, message, time }) => {
     const { socket } = useContext(SocketContext);
 
     const extractTime = (time: string): string => {
@@ -23,30 +17,31 @@ const Message: FC<Props> = memo(({ socketId, username, message }) => {
 
     const fromMe: boolean = socketId === socket?.id;
 
-    const applyWrapperClasses = (): string => {
+    const applyClasses = (): { forSection: string; forDiv: string } => {
         if (fromSystem) {
-            return "justify-center";
+            return {
+                forSection: "justify-center",
+                forDiv: "w-full flex flex-col items-center px-8",
+            };
         } else if (fromMe) {
-            return "justify-end";
+            return {
+                forSection: "justify-end",
+                forDiv: "flex flex-row-reverse items-center gap-2 pr-4 pl-8",
+            };
         } else {
-            return "justify-start";
-        }
-    };
-
-    const applyMessageClasses = (): string => {
-        if (fromSystem) {
-            return "w-full flex flex-col items-center px-8";
-        } else if (fromMe) {
-            return "flex flex-row-reverse items-center gap-2 pr-4 pl-8";
-        } else {
-            return "flex items-center gap-2 pr-8 pl-4";
+            return {
+                forSection: "justify-start",
+                forDiv: "flex items-center gap-2 pr-8 pl-4",
+            };
         }
     };
 
     return (
-        <section className={`flex w-full ${applyWrapperClasses()}`}>
+        <section className={`flex w-full ${applyClasses().forSection}`}>
             <div
-                className={`bg-[#222] py-2 rounded-full w-fit ${applyMessageClasses()}`}
+                className={`bg-[#222] py-2 rounded-full w-fit ${
+                    applyClasses().forDiv
+                }`}
             >
                 {!fromSystem && (
                     <Avatar socketId={socketId} username={username} />
@@ -55,9 +50,9 @@ const Message: FC<Props> = memo(({ socketId, username, message }) => {
                     {!fromSystem && (
                         <h1 className="font-semibold">{username}:</h1>
                     )}
-                    <h2 className="flex">{message.content}</h2>
+                    <h2 className="flex">{message}</h2>
                     <h3 className="text-[#ffffff62] text-sm">
-                        at {extractTime(message.time)}
+                        at {extractTime(time)}
                     </h3>
                 </div>
             </div>

@@ -8,17 +8,20 @@ const io = new Server(3000, {
 
 io.on("connection", (socket) => {
     socket.on("send", ({ socketId, username, message }) => {
-        io.emit("receive", { socketId, username, message });
+        io.emit("receive", {
+            socketId,
+            username,
+            message,
+            time: new Date().toISOString(),
+        });
     });
 
     socket.on("join", (username) => {
         socket.broadcast.emit("receive", {
             socketId: "system",
             username,
-            message: {
-                content: `${username} has joined the chat.`,
-                time: new Date().toISOString(),
-            },
+            message: `${username} has joined the chat.`,
+            time: new Date().toISOString(),
         });
     });
 });
