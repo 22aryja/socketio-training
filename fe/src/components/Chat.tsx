@@ -1,7 +1,7 @@
+import { SocketContext } from "@/contexts/SocketContext";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Input from "./Input";
 import Message from "./Message";
-import { SocketContext } from "@/contexts/SocketContext";
 
 type MessageProp = React.ComponentProps<typeof Message>;
 
@@ -38,6 +38,7 @@ const Chat = () => {
         return () => {
             socket?.off("receive", handleReceive);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
 
     const handleSend = (newMessage: MessageProp) => {
