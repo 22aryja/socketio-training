@@ -6,7 +6,7 @@ interface Props {
     username: string;
 }
 
-export const Avatar: FC<Props> = memo(({ socketId, username }) => {
+export const Avatar: FC<Props> = ({ socketId, username }) => {
     const { bgClass, initials } = useAvatar(socketId, username);
 
     return (
@@ -16,6 +16,6 @@ export const Avatar: FC<Props> = memo(({ socketId, username }) => {
             {initials}
         </span>
     );
-});
+};
 
 export default Avatar;

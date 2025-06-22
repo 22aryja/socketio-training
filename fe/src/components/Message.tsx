@@ -48,7 +48,9 @@ const Message: FC<Props> = memo(({ socketId, username, message }) => {
             <div
                 className={`bg-[#222] py-2 rounded-full w-fit ${applyMessageClasses()}`}
             >
-                {!fromSystem && <Avatar username={username} />}
+                {!fromSystem && (
+                    <Avatar socketId={socketId} username={username} />
+                )}
                 <div>
                     {!fromSystem && (
                         <h1 className="font-semibold">{username}:</h1>
